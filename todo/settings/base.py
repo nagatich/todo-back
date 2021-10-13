@@ -27,6 +27,8 @@ INSTALLED_APPS = [
     'channels',
 
     'custom_auth',
+    'core',
+    'notifications',
 ]
 
 REST_FRAMEWORK = {
@@ -144,7 +146,7 @@ CHANNEL_LAYERS = {
 }
 
 CELERY_IMPORTS = [
-    'core.tasks',
+    # 'core.tasks',
     'notifications.tasks',
 ]
 

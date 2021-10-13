@@ -1,16 +1,9 @@
-"""
-ASGI config for todo project.
+from channels.routing import ProtocolTypeRouter
 
-It exposes the ASGI callable as a module-level variable named ``application``.
+from notifications.middleware import AuthMiddleware
 
-For more information on this file, see
-https://docs.djangoproject.com/en/3.1/howto/deployment/asgi/
-"""
+from .routing import websocket_urlpatterns
 
-import os
-
-from django.core.asgi import get_asgi_application
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'todo.settings')
-
-application = get_asgi_application()
+application = ProtocolTypeRouter({
+    'websocket': AuthMiddleware(websocket_urlpatterns),
+})

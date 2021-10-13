@@ -7,3 +7,4 @@ staticfiles/
 .Todo
 db.sqlite3
 dump.rdb
+celerybeat-schedule
