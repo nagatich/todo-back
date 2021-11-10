@@ -1,0 +1,59 @@
+version: '3.9'
+
+volumes:
+  media: {}
+  static: {}
+
+services:
+  app:
+    restart: always
+    build: .
+    command: bash -c "python3 manage.py collectstatic --noinput && daphne -b 0.0.0.0 -p 8001 todo.asgi:application"
+    ports:
+      - "8001:8001"
+    depends_on:
+      - redis
+    volumes:
+      - media/:/media/
+      - static/:/static/
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE
+      - DEBUG
+      - DJANGO_ENV
+
+  redis:
+    restart: always
+    image: redis:latest
+
+  celery:
+    image: celery:latest
+    restart: always
+    build: .
+    command: celery -A todo worker -l info
+    depends_on:
+      - redis
+      - app
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE
+      - DEBUG
+      - DJANGO_ENV
+
+  nginx:
+    restart: always
+    image: nginx:latest
+    build: ./nginx
+    volumes:
+      - media/:/media/
+      - static/:/static/
+    ports:
+      - "80:80"
+    environment:
+      - HOST_NAME
+    env_file:
+      - ./.env
+    depends_on:
+      - app
