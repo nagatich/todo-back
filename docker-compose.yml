@@ -5,6 +5,10 @@ volumes:
   static: {}
 
 services:
+  redis:
+    restart: always
+    image: redis:latest
+
   app:
     restart: always
     build: .
@@ -18,14 +22,6 @@ services:
       - static/:/static/
     env_file:
       - .env
-    environment:
-      - DJANGO_SETTINGS_MODULE
-      - DEBUG
-      - DJANGO_ENV
-
-  redis:
-    restart: always
-    image: redis:latest
 
   celery:
     image: celery:latest
@@ -37,10 +33,6 @@ services:
       - app
     env_file:
       - .env
-    environment:
-      - DJANGO_SETTINGS_MODULE
-      - DEBUG
-      - DJANGO_ENV
 
   nginx:
     restart: always
